@@ -107,9 +107,10 @@ def generate(
         "100% M": 0,
     }
 
-    gender_map: Mapping[bool, str] = {
-        False: "M",
-        True: "F",
+    gender_map: Mapping[int, str] = {
+        0: "M",
+        1: "F",
+        2: "-",
     }
 
     nature_map: Mapping[int, str] = {
@@ -166,15 +167,15 @@ def generate(
             rng: XoroshiroBDSP = XoroshiroBDSP(seed)
 
             if gender_ratio == 255:
-                raise NotImplementedError
+                gender: int = 2
             elif gender_ratio == 254:
-                raise NotImplementedError
+                gender: int = 1
             elif gender_ratio == 1:
-                gender: bool = bool(rng.next(2))
+                gender: int = rng.next(2)
             elif gender_ratio == 0:
-                raise NotImplementedError
+                gender: int = 0
             else:
-                gender: bool = (rng.next(252) + 1) < gender_ratio
+                gender: int = int((rng.next(252) + 1) < gender_ratio)
 
             nature: int = rng.next(25)
             # TODO handle items - match parent nature
@@ -265,6 +266,5 @@ if __name__ == "__main__":
 
 """ TODO
 - Account for items
-- Handle 100% and Genderless gender ratios
 - Calculate actual Ability
 """

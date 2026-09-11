@@ -38,7 +38,7 @@ class PokeFinderGUI(tk.Frame):
         "shiny_charm": False,
         "oval_charm": True,
         "compatibility_str": "The two seem to get along",
-        "gender_ratio_str": "Nidoran / VI",
+        "gender_ratio_str": "Genderless",
         "masuda": True,
         "image": "./images/cave/eye.png",
         "camera": 0,
