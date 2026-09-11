@@ -1,5 +1,5 @@
 [project]
-name = "PokeFinderXs"
+name = "PokeFinder_Xs"
 version = "1.0.0"
 description = "Cross platform Pokémon RNG tool"
 readme = "README.md"
@@ -32,7 +32,7 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/ryanbaekr/PokeFinderXs"
+Repository = "https://github.com/ryanbaekr/PokeFinder_Xs"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,3 +1,3 @@
-# PokeFinderXs
+# PokeFinder_Xs
 
 TODO
