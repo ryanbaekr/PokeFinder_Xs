@@ -5,35 +5,41 @@ from typing import Tuple
 
 
 class Xorshift:
-    def __init__(self, seed0: int, seed1: int):
-        self.seed: MutableSequence[int] = [seed0 >> 32, seed0 & 0xFFFFFFFF, seed1 >> 32, seed1 & 0xFFFFFFFF]
-        self.last: MutableSequence[int] = []
+    def __init__(self, seed0: int, seed1: int, seed2: int, seed3: int):
+        self.seed0: int = seed0
+        self.seed1: int = seed1
+        self.seed2: int = seed2
+        self.seed3: int = seed3
 
-    def next(self, count: Optional[int] = None) -> int:
-        self.last = [x for x in self.seed]
+    def next(self) -> int:
+        temp = self.seed0 ^ self.seed0 << 11 & 0xFFFFFFFF
+        self.seed0 = self.seed1
+        self.seed1 = self.seed2
+        self.seed2 = self.seed3
+        self.seed3 = temp ^ temp >> 8 ^ self.seed3 ^ self.seed3 >> 19
 
-        t: int = self.seed[0]
-        s: int = self.seed[3]
+        return self.seed3
 
-        t ^= (t << 11) & 0xFFFFFFFF
-        t ^= t >> 8
-        t ^= s ^ (s >> 19)
+    def prev(self) -> int:
+        temp = self.seed2 >> 19 ^ self.seed2 ^ self.seed3
+        temp ^= temp >> 8
+        temp ^= temp >> 16
 
-        self.seed[0] = self.seed[1]
-        self.seed[1] = self.seed[2]
-        self.seed[2] = self.seed[3]
-        self.seed[3] = t
+        temp ^= temp << 11 & 0xFFFFFFFF
+        temp ^= temp << 22 & 0xFFFFFFFF
 
-        q: int = ((t % 0xFFFFFFFF) + 0x80000000) & 0xFFFFFFFF
+        self.seed3 = self.seed2
+        self.seed2 = self.seed1
+        self.seed1 = self.seed0
+        self.seed0 = temp
 
-        if count is None:
-            return q
-        else:
-            return q % count
+        return self.seed3
 
-    def back(self) -> None:
-        self.seed = self.last
-        self.last = []
+    def get_next_rand_sequence(self, length: int) -> MutableSequence[int]:
+        return [self.next() for _ in range(length)]
+
+    def get_state(self) -> MutableSequence[int]:
+        return [self.seed0, self.seed1, self.seed2, self.seed3]
 
 
 class XoroshiroBDSP:
@@ -146,7 +152,7 @@ def generate(
     compatibility: int = compatibility_map[(compatibility_str, oval_charm)]
     gender_ratio: int = gender_ratio_map[gender_ratio_str]
 
-    rng_list: Xorshift = Xorshift(seed0, seed1)
+    rng_list: Xorshift = Xorshift(seed0 >> 32, seed0 & 0xFFFFFFFF, seed1 >> 32, seed1 & 0xFFFFFFFF)
 
     pid_rolls: int = 0
     if masuda:
@@ -160,9 +166,9 @@ def generate(
     hits: MutableSequence[Mapping[str, str]] = []
 
     for count in range(0, max_advances + 1):
-        if rng_list.next(100) < compatibility:
+        if (((rng_list.next() % 0xFFFFFFFF) + 0x80000000) & 0xFFFFFFFF) % 100 < compatibility:
             sem: int = 0x80000000
-            seed: int = (rng_list.next() ^ sem) - sem
+            seed: int = ((((rng_list.next() % 0xFFFFFFFF) + 0x80000000) & 0xFFFFFFFF) ^ sem) - sem
 
             rng: XoroshiroBDSP = XoroshiroBDSP(seed)
 
@@ -227,7 +233,7 @@ def generate(
                         )
                     break
 
-            rng_list.back()
+            rng_list.prev()
 
     return hits
 

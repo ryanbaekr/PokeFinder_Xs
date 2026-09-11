@@ -4,7 +4,7 @@ from typing import Tuple
 import time
 import sys
 import cv2
-from xorshift import Xorshift
+from egg_generator import Xorshift
 import calc
 
 IDLE = 0xFF
@@ -605,7 +605,7 @@ def reidentiy_by_intervals_noisy(rng:Xorshift,
         pokemon_blink_count = sum(differences)
         possible_advances.append((pokemon_blink_count,advance))
     correct = min(possible_advances)
-    rng.advance(search_min+sum(correct)+reident_time)
+    rng.get_next_rand_sequence(search_min+sum(correct)+reident_time)
     return rng, search_min+sum(correct)+reident_time
 
 def recov_by_munchlax(rawintervals:List[float])->Xorshift:
