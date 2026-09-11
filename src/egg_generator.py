@@ -12,7 +12,7 @@ class Xorshift:
         self.seed3: int = seed3
 
     def next(self) -> int:
-        temp = self.seed0 ^ self.seed0 << 11 & 0xFFFFFFFF
+        temp: int = self.seed0 ^ self.seed0 << 11 & 0xFFFFFFFF
         self.seed0 = self.seed1
         self.seed1 = self.seed2
         self.seed2 = self.seed3
@@ -21,7 +21,7 @@ class Xorshift:
         return self.seed3
 
     def prev(self) -> int:
-        temp = self.seed2 >> 19 ^ self.seed2 ^ self.seed3
+        temp: int = self.seed2 >> 19 ^ self.seed2 ^ self.seed3
         temp ^= temp >> 8
         temp ^= temp >> 16
 
@@ -73,6 +73,18 @@ class XoroshiroBDSP:
             return (result >> 32) % max
         else:
             return result >> 32
+
+
+def get_gender(rng: XoroshiroBDSP, gender_ratio: int) -> int:
+    if gender_ratio == 255:
+        return 2
+    if gender_ratio == 254:
+        return 1
+    if gender_ratio == 1:
+        return rng.next(2)
+    if gender_ratio == 0:
+        return 0
+    return int((rng.next(252) + 1) < gender_ratio)
 
 
 def is_shiny(pid: int, tsv: int) -> int:
@@ -172,16 +184,7 @@ def generate(
 
             rng: XoroshiroBDSP = XoroshiroBDSP(seed)
 
-            if gender_ratio == 255:
-                gender: int = 2
-            elif gender_ratio == 254:
-                gender: int = 1
-            elif gender_ratio == 1:
-                gender: int = rng.next(2)
-            elif gender_ratio == 0:
-                gender: int = 0
-            else:
-                gender: int = int((rng.next(252) + 1) < gender_ratio)
+            gender: int = get_gender(rng, gender_ratio)
 
             nature: int = rng.next(25)
             # TODO handle items - match parent nature
@@ -237,38 +240,6 @@ def generate(
 
     return hits
 
-
-if __name__ == "__main__":
-    # game data
-    tid: int = 12345
-    sid: int = 54321
-    shiny_charm: bool = True
-    oval_charm: bool = True
-
-    # daycare data
-    compatibility_str: str = "The two seem to get along"
-    gender_ratio_str: str = "Nidoran / VI"
-    masuda: bool = True
-
-    # rng data
-    seed0: int = 0x1234567887654321
-    seed1: int = 0x8765432112345678
-    initial_advances: int = 0
-    max_advances: int = 10000
-
-    print(generate(
-        tid,
-        sid,
-        shiny_charm,
-        oval_charm,
-        compatibility_str,
-        gender_ratio_str,
-        masuda,
-        seed0,
-        seed1,
-        initial_advances,
-        max_advances,
-    ))
 
 """ TODO
 - Account for items

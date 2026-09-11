@@ -1,12 +1,15 @@
 """Testing for Egg Generator"""
 
+from typing import Mapping
+from typing import MutableSequence
+
 from src import egg_generator
 
 
 def test_genderless() -> None:
     """Test generate with Genderless gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -267,7 +270,7 @@ def test_genderless() -> None:
 def test_100_f() -> None:
     """Test generate with 100% F gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -528,7 +531,7 @@ def test_100_f() -> None:
 def test_25_m_75_f() -> None:
     """Test generate with 25% M / 75% F gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -821,7 +824,7 @@ def test_25_m_75_f() -> None:
 def test_50_m_50_f() -> None:
     """Test generate with 50% M / 50% F gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -1114,7 +1117,7 @@ def test_50_m_50_f() -> None:
 def test_75_m_25_f() -> None:
     """Test generate with 75% M / 25% F gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -1407,7 +1410,7 @@ def test_75_m_25_f() -> None:
 def test_88_m_12_f() -> None:
     """Test generate with 88% M / 12% F gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -1700,7 +1703,7 @@ def test_88_m_12_f() -> None:
 def test_nidoran_vi() -> None:
     """Test generate with Nidoran / VI gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
@@ -1993,7 +1996,7 @@ def test_nidoran_vi() -> None:
 def test_100_m() -> None:
     """Test generate with 100% M gender ratio"""
 
-    shinies = egg_generator.generate(
+    shinies: MutableSequence[Mapping[str, str]] = egg_generator.generate(
         12345,
         54321,
         True,
